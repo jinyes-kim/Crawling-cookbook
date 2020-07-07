@@ -5,6 +5,8 @@ from selenium import webdriver
 driver = webdriver.Chrome("C:/Chromedriver")
 driver.get() #url address
 
+res_list = [] # review bag
+
 for a in range(2, 12): # 
     driver.find_element_by_xpath("").click()  # Xpath address
     html = driver.page_source
@@ -15,4 +17,6 @@ for a in range(2, 12): #
         word = str(word)
         word = word.replace('', '') # 제거할 문자
         word = word.replace('', '') # "
-        print(word)
+        word = word.replace('\n', '') # 줄바꿈 제거
+        res_list.append(word)
+
