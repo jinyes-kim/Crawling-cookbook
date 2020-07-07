@@ -1,7 +1,5 @@
 # naver store farm
 
-# naver store farm
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
@@ -21,6 +19,3 @@ for a in range(2, 12): #
         word = word.replace('', '') # 제거할 문자
         word = word.replace('', '') # "
         print(word)
-
-
-
