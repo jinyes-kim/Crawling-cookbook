@@ -15,8 +15,8 @@ for a in range(2, 12): #
     dummy = list(dummy)
     for word in dummy:
         word = str(word)
-        word = word.replace('', '') # 제거할 문자
-        word = word.replace('', '') # "
-        word = word.replace('\n', '') # 줄바꿈 제거
+        word = word.replace('', '')
+        word = word.replace('', '')
+        word = word.replace('\n', '')
         res_list.append(word)
 
