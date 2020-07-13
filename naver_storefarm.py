@@ -16,7 +16,6 @@ for a in range(2, 12): #
     for word in dummy:
         word = str(word)
         word = word.replace('', '')
-        word = word.replace('', '')
         word = word.replace('\n', '')
         res_list.append(word)
 
