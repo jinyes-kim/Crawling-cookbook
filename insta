@@ -135,3 +135,4 @@ for record in result_list:
     wr.writerow(record)
 
 output.close()
+
