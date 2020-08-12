@@ -2,28 +2,62 @@ from selenium import webdriver as wb
 from bs4 import BeautifulSoup
 from time import sleep
 import pprint
+import csv
+import re
 
+# input keyword
 kwd = input("keyword: ")
-url = "https://www.instagram.com/explore/tags/" + str(kwd)
+
+
+#login info
 driver = wb.Chrome('chromedriver.exe')
+driver.get('https://www.instagram.com/accounts/login/?source=auth_switcher')
+sleep(3)
+
+id = ''
+password = ''
+id_input = driver.find_elements_by_css_selector('#loginForm > div > div:nth-child(1) > div > label > input')[0]
+id_input.send_keys(id)
+password_input = driver.find_elements_by_css_selector('#loginForm > div > div:nth-child(2) > div > label > input')[0]
+password_input.send_keys(password)
+password_input.submit()
+sleep(3)
+
+
+# target page
+url = "https://www.instagram.com/explore/tags/" + str(kwd)
 driver.get(url)
 sleep(3)
 
-#login
 
 item_link = []
+while True:
+    html_source = driver.page_source
+    soup = BeautifulSoup(html_source, 'html.parser')
 
+    for tmp in soup.find_all(name="div", attrs={"class": "Nnq7C weEfm"}):
+        dummy_link = tmp.select('a')
+        for dummy in dummy_link:
+            item_link.append(dummy.attrs['href'])
 
-# append #tag link
-#while True:
-html_source = driver.page_source
-soup = BeautifulSoup(html_source, 'html.parser')
+    # scroll down
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    sleep(3)
+    new_height = driver.execute_script("return document.body.scrollHeight")
 
-for tmp in soup.find_all(name="div", attrs={"class":"Nnq7C weEfm"}):
-    title = tmp.select('a')[0]
-    item_link.append(title.attrs['href'])
+    if new_height == last_height:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        sleep(3)
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        else:
+            last_height = new_height
+            continue
 
-
+item_link = list(set(item_link))
+print(len(item_link))
 
 # crawling
 feed = []
@@ -53,29 +87,51 @@ for article in feed:
 
     like = article[3]
     if '좋아요' in like:
-        tmp.append(like[2:7])
+        num = like.find('좋아요')
+        end_num = like.find('개')
+        tmp.append(like[num + 3: end_num].strip())
     else:
-        tmp.append('좋아요 0')
+        tmp.append('0')
 
     pp_list.append(tmp)
 
 
+eng_result = []
+for i in pp_list:
+    text = re.sub('[^0-9a-zA-Z#!?]', ' ', i[1]).strip()
+    if text != '':
+        i[1] = text
+        eng_result.append(i)
+
+del pp_list
+
 # add hash tag
 result_list = []
-for tmp in pp_list:
+for tmp in eng_result:
     hash_tag_list = []
-    if '#' in tmp[0]:
-        tmp_list = tmp[0].split(" ")
+    if '#' in tmp[1]:
+        tmp_list = tmp[1].split(" ")
         for tag in tmp_list:
             if tag.startswith('#'):
                 hash_tag_list.append(tag)
 
-        tmp.append(','.join(hash_tag_list))
+        tmp.append(', '.join(hash_tag_list))
 
     else:
         tmp.append('null')
-
     result_list.append(tmp)
+    print(tmp)
 
+
+del eng_result
 pprint.pprint(result_list)
 
+# export csv file
+output = open(kwd + '.csv', 'w', encoding='utf-8-sig', newline='')
+wr = csv.writer(output)
+wr.writerow(['date', 'text', 'like', 'tag'])
+
+for record in result_list:
+    wr.writerow(record)
+
+output.close()
