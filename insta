@@ -82,3 +82,61 @@ for record in feed:
     wr.writerow(record)
 
 output.close()
+
+
+
+"""
+# add like
+pp_list = []
+for article in feed:
+    tmp = []
+    tmp.append(article[0]) # date
+    tmp.append(article[2]) # review
+
+    like = article[3]
+    if '좋아요' in like:
+        num = like.find('좋아요')
+        end_num = like.find('개')
+        tmp.append(like[num + 3: end_num].strip())
+    else:
+        tmp.append('0')
+
+    pp_list.append(tmp)
+
+
+
+# add hash tag
+result_list = []
+for tmp in pp_list:
+    hash_tag_list = []
+    if '#' in tmp[1]:
+        tmp_list = tmp[1].split(" ")
+        for tag in tmp_list:
+            if tag.startswith('#'):
+                hash_tag_list.append(tag)
+
+        tmp.append(', '.join(hash_tag_list))
+
+    else:
+        tmp.append('null')
+    result_list.append(tmp)
+
+del pp_list
+
+eng_result = []
+for i in result_list:
+    text = re.sub('[^0-9a-zA-Z]', ' ', i[1]).strip()
+    tag = re.sub('[^0-9a-zA-Z]', ' ', i[3]).strip()
+    if tag != '':
+        i[3] = tag
+    else:
+        i[3] = 'null'
+
+    if text != '':
+        i[1] = text
+        eng_result.append(i)
+
+
+del result_list
+pprint.pprint(eng_result)
+"""
