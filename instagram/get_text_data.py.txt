@@ -1,7 +1,3 @@
-"""
-crawling link data
-
-"""
 import pprint
 from bs4 import BeautifulSoup
 from selenium import webdriver as wb
@@ -15,7 +11,6 @@ link_list = []
 with open('topic_link.txt', 'r') as file:
     for link in file:
         link_list.append(link)
-
 
 link_list = list(set(link_list))
 print(len(list(set(link_list))))
@@ -38,12 +33,13 @@ for link in link_list:
                 writer_like_point = soup.find(name='div', attrs={"class": "Nm9Fw"})
                 try:
                     likes = str(writer_like_point.select('span'))
+                    start = likes.find('<span>')
+                    end = likes.find('</span>')
+                    tmp_list.append(likes[start + 6: end])
                 except:
                     likes = str(soup.select('head > meta:nth-child(35)'))
+                    tmp_list.append(likes)
 
-                start = likes.find('<span>')
-                end = likes.find('</span>')
-                tmp_list.append(likes[start + 6: end])
             else:
                 tmp_list.append(word.get_text())
         feed.append(tmp_list)
