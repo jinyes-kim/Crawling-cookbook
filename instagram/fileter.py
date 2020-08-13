@@ -26,6 +26,8 @@ def extract_tag(text):
 
 
 def extract_like(text):
+    if text.isdigit():
+        return int(text)
     if '좋아요' in text:
         start_location = text.find('좋아요')
         end_location = text.find('개')
@@ -53,6 +55,6 @@ like_col = list(map(extract_like, like_col))
 df['like_point'] = like_col
 
 print(df)
-
+print(df['like'])
 
 df.to_csv(file + '_pp.csv', header=True, encoding='utf-8-sig')
