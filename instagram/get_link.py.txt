@@ -18,7 +18,7 @@ driver.get('https://www.instagram.com/accounts/login/?source=auth_switcher')
 sleep(3)
 
 id = 'tempcrawlingbot2'
-password = 'asdfqwer!@#$'
+password = ''
 id_input = driver.find_elements_by_css_selector('#loginForm > div > div:nth-child(1) > div > label > input')[0]
 id_input.send_keys(id)
 password_input = driver.find_elements_by_css_selector('#loginForm > div > div:nth-child(2) > div > label > input')[0]
