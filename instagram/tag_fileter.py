@@ -22,7 +22,7 @@ def extract_tag(text):
         if word.startswith('#'):
             res.append(word)
 
-    return res
+    return ' '.join(res)
 
 
 def extract_like(text):
@@ -35,9 +35,10 @@ def extract_like(text):
 
 
 # pre-processing
-file = open("file name: ")
-data = pd.read_csv(file, 'r', encoding='uft-8-sig')
+file = input("file name: ")
+data = pd.read_csv(file)
 df = pd.DataFrame(data)
+print(df)
 
 pp_text_col = list(map(only_eng_num, df['text']))
 pp_text_col = list(map(pp, pp_text_col))
@@ -54,6 +55,4 @@ df['like_point'] = like_col
 print(df)
 
 
-df.to_csv(file + '_pp.csv', header=True)
-
-
+df.to_csv(file + '_pp.csv', header=True, encoding='utf-8-sig')
