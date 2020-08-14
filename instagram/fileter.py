@@ -4,6 +4,9 @@ import pandas as pd
 
 def only_eng_num(word):
     word = re.sub('[^0-9a-zA-Z]', ' ', word).strip()
+    dummy_word = word.replace(' ', '')
+    if dummy_word.isdigit():
+        word = ''
     return word
 
 
@@ -22,10 +25,18 @@ def extract_tag(text):
         if word.startswith('#'):
             res.append(word)
 
-    return ' '.join(res)
+    result = []
+    for word in res:
+        word = re.sub('[^0-9a-zA-Z]', '', word).strip()
+        if len(word) > 1:
+            result.append('#' + word)
+
+    return ' '.join(result)
 
 
 def extract_like(text):
+    if type(text) == float:
+        return 0
     if text.isdigit():
         return int(text)
     if '좋아요' in text:
